@@ -79,7 +79,7 @@ const OrderReport = () => {
   };
 
   const data = {
-    labels: reportData.map((order) => order.order_id),
+    labels: reportData.map((order) => order.customer_name), // Use customer names as labels
     datasets: [
       {
         label: "Total Revenue",
@@ -89,11 +89,29 @@ const OrderReport = () => {
     ],
   };
 
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false, // Prevents the aspect ratio from being maintained
+    scales: {
+      x: {
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 10,
+        },
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
     <div>
       <h1>Order Report</h1>
       {error && <p>Error: {error}</p>}
-      <Bar data={data} />
+      <div style={{ width: "100%", height: "300px" }}>
+        <Bar data={data} options={options} />
+      </div>
       <h2>Order List</h2>
       <button onClick={handleDeleteSelected}>Delete Selected Orders</button>
       <table>
@@ -170,7 +188,7 @@ const OrderReport = () => {
               required
             />
             <input
-              type="datetime-local" // Changed to datetime-local
+              type="datetime-local"
               value={editOrder.orderDate}
               onChange={(e) =>
                 setEditOrder({ ...editOrder, orderDate: e.target.value })

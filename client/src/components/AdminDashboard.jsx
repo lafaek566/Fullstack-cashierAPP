@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { motion } from "framer-motion"; // Import motion dari framer-motion
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
@@ -10,7 +10,7 @@ function AdminDashboard() {
     price: "",
     stock: "",
     image: null,
-    imageUrl: "", // Tambahkan field baru untuk image URL
+    imageUrl: "",
   });
   const [updatedProduct, setUpdatedProduct] = useState({
     id: null,
@@ -18,12 +18,13 @@ function AdminDashboard() {
     price: "",
     stock: "",
     image: null,
-    imageUrl: "", // Tambahkan field baru untuk image URL
+    imageUrl: "",
   });
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // State loading
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // Inisialisasi useNavigate
+  const navigate = useNavigate();
+  const updateFormRef = useRef(null);
 
   useEffect(() => {
     fetchProducts();
@@ -33,12 +34,7 @@ function AdminDashboard() {
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:5001/products");
-      if (Array.isArray(response.data)) {
-        setProducts(response.data);
-      } else {
-        console.error("Unexpected data format:", response.data);
-        setProducts([]);
-      }
+      setProducts(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
@@ -60,21 +56,15 @@ function AdminDashboard() {
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price);
     formData.append("stock", newProduct.stock);
-
-    if (newProduct.image) {
-      formData.append("image", newProduct.image);
-    } else if (newProduct.imageUrl) {
-      formData.append("imageUrl", newProduct.imageUrl);
-    }
+    if (newProduct.image) formData.append("image", newProduct.image);
+    if (newProduct.imageUrl) formData.append("imageUrl", newProduct.imageUrl);
 
     try {
       const response = await axios.post(
         "http://localhost:5001/products",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       setMessage(response.data.message);
@@ -84,12 +74,10 @@ function AdminDashboard() {
         stock: "",
         image: null,
         imageUrl: "",
-      }); // Reset semua field
+      });
       fetchProducts();
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error || "Error adding product";
-      setMessage(errorMessage);
+      setMessage(error.response?.data?.error || "Error adding product");
       console.error("Error adding product:", error);
     }
   };
@@ -107,22 +95,15 @@ function AdminDashboard() {
     formData.append("name", updatedProduct.name);
     formData.append("price", updatedProduct.price);
     formData.append("stock", updatedProduct.stock);
-
-    if (updatedProduct.image) {
-      formData.append("image", updatedProduct.image);
-    } else if (updatedProduct.imageUrl) {
+    if (updatedProduct.image) formData.append("image", updatedProduct.image);
+    if (updatedProduct.imageUrl)
       formData.append("imageUrl", updatedProduct.imageUrl);
-    }
 
     try {
       const response = await axios.put(
         `http://localhost:5001/products/${updatedProduct.id}`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       setMessage(response.data.message);
       setUpdatedProduct({
@@ -131,24 +112,17 @@ function AdminDashboard() {
         price: "",
         stock: "",
         image: null,
-        imageUrl: "", // Reset image URL
+        imageUrl: "",
       });
       fetchProducts();
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error || "Error updating product";
-      setMessage(errorMessage);
+      setMessage(error.response?.data?.error || "Error updating product");
       console.error("Error updating product:", error);
     }
   };
 
   const handleDeleteProduct = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this item?"
-    );
-    if (!confirmDelete) {
-      return; // If user clicks "No", exit the function.
-    }
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
 
     try {
       const response = await axios.delete(
@@ -157,103 +131,49 @@ function AdminDashboard() {
       setMessage(response.data.message);
       fetchProducts();
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error || "Error deleting product";
-      setMessage(errorMessage);
+      setMessage(error.response?.data?.error || "Error deleting product");
       console.error("Error deleting product:", error);
     }
   };
 
-  // Function to navigate to different pages
-  const handleNavigate = (path) => {
-    navigate(path);
+  const handleEditClick = (product) => {
+    setUpdatedProduct({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      stock: product.stock,
+      image: null,
+      imageUrl: "",
+    });
+    updateFormRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="p-5">
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       <h2 className="mt-5 text-xl">Akses semua halaman</h2>
-
       {message && <p className="text-red-500">{message}</p>}
       {loading && <p>Loading products...</p>}
 
       <div className="mt-5 mb-5 space-x-4">
         <button
-          onClick={() => handleNavigate("/report")}
+          onClick={() => navigate("/report")}
           className="bg-blue-500 text-white py-2 px-4 rounded"
         >
           Order Report
         </button>
         <button
-          onClick={() => handleNavigate("/kasir")}
+          onClick={() => navigate("/kasir")}
           className="bg-green-500 text-white py-2 px-4 rounded"
         >
           Kasir
         </button>
         <button
-          onClick={() => handleNavigate("/list")}
+          onClick={() => navigate("/list")}
           className="bg-green-500 text-white py-2 px-4 rounded"
         >
           User
         </button>
-      </div>
-
-      <h2 className="mt-10 text-xl">Product List</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {products.length > 0 ? (
-          products.map((product) => (
-            <motion.div
-              key={product.id}
-              className="border p-4 rounded shadow-md"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <p>Price: ${Number(product.price).toFixed(2)}</p>
-              <p>Stock: {product.stock}</p>
-              {product.image && (
-                <img
-                  src={`http://localhost:5001${product.image}`}
-                  alt={product.name}
-                  className="w-10 h-10 object-cover mt-2 rounded"
-                />
-              )}
-              {product.imageUrl && (
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-10 h-12 object-cover mt-2 rounded"
-                />
-              )}
-              <div className="mt-4 flex space-x-2">
-                <button
-                  onClick={() => {
-                    setUpdatedProduct({
-                      id: product.id,
-                      name: product.name,
-                      price: product.price,
-                      stock: product.stock,
-                      image: null,
-                      imageUrl: "", // Reset image URL untuk editing
-                    });
-                  }}
-                  className="bg-yellow-500 text-white py-1 px-2 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteProduct(product.id)}
-                  className="bg-red-500 text-white py-1 px-2 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            </motion.div>
-          ))
-        ) : (
-          <p>No products available.</p>
-        )}
       </div>
 
       <h2 className="mt-10 text-xl">Add New Product</h2>
@@ -303,7 +223,9 @@ function AdminDashboard() {
         </button>
       </form>
 
-      <h2 className="mt-10 text-xl">Update Product</h2>
+      <h2 className="mt-10 text-xl" ref={updateFormRef}>
+        Update Product
+      </h2>
       <form onSubmit={handleUpdateProduct} className="space-y-4">
         <input
           type="text"
@@ -344,13 +266,87 @@ function AdminDashboard() {
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded"
+          className="bg-green-500 text-white py-2 px-4 rounded"
         >
           Update Product
         </button>
       </form>
+
+      <h2 className="mt-5 text-xl">Product List</h2>
+      <div style={styles.productGrid}>
+        {products.length > 0 ? (
+          products.map((product) => (
+            <motion.div
+              key={product.id}
+              style={styles.productContainer}
+              className="border p-5 rounded shadow-md"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.05 }} // Hover effect
+              transition={{ duration: 0.4 }}
+              whileTap={{ scale: 0.85 }}
+            >
+              {product.image && (
+                <img
+                  src={`http://localhost:5001${product.image}`}
+                  alt={product.name}
+                  style={styles.productImage}
+                />
+              )}
+              {product.imageUrl && (
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-10 h-12 object-cover mt-1 rounded"
+                />
+              )}
+              <h3 className="text-lg font-semibold">{product.name}</h3>
+              <p>Price: ${Number(product.price).toFixed(2)}</p>
+              <p>Stock: {product.stock}</p>
+              <div className="space-x-3 mt-2">
+                <button
+                  onClick={() => handleEditClick(product)}
+                  className="bg-yellow-500 text-white py-1 px-3 rounded"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteProduct(product.id)}
+                  className="bg-red-500 text-white py-1 px-3 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          ))
+        ) : (
+          <p>No products available.</p>
+        )}
+      </div>
     </div>
   );
 }
+
+const styles = {
+  productGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+    gap: "10px",
+  },
+  productContainer: {
+    border: "1px solid #ccc",
+    padding: "10px",
+    borderRadius: "5px",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+  },
+  productImage: {
+    width: "100px",
+    height: "100px",
+    objectFit: "cover",
+    borderRadius: "8px",
+  },
+};
 
 export default AdminDashboard;

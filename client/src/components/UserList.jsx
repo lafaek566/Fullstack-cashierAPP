@@ -15,7 +15,12 @@ const UserList = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:5001/users");
-      setUsers(response.data);
+      // Format the created_at field
+      const formattedUsers = response.data.map((user) => ({
+        ...user,
+        created_at: new Date(user.created_at).toLocaleString(), // Format the date
+      }));
+      setUsers(formattedUsers);
     } catch (err) {
       setError("Failed to fetch users.");
     } finally {
@@ -88,7 +93,10 @@ const UserList = () => {
           "http://localhost:5001/users",
           newUser
         );
-        setUsers((prevUsers) => [...prevUsers, response.data]); // Add new user to the list
+        setUsers((prevUsers) => [
+          ...prevUsers,
+          { ...response.data, created_at: new Date().toLocaleString() },
+        ]); // Add new user to the list with formatted date
       }
 
       setEditingUser(null);
@@ -109,17 +117,18 @@ const UserList = () => {
       <form onSubmit={handleSubmit}>
         <h2>{editingUser ? "Edit User" : "Add User"}</h2>
         <div>
-          <label>Username:</label>
+          <h3>Username:</h3>
           <input
             type="text"
             name="username"
+            placeholder="enter name"
             value={formData.username}
             onChange={handleFormChange}
             required
           />
         </div>
         <div>
-          <label>Role:</label>
+          <h3>Role:</h3>
           <select
             name="role"
             value={formData.role}
@@ -132,16 +141,17 @@ const UserList = () => {
           </select>
         </div>
         <div>
-          <label>Password:</label>
+          <h3>Password:</h3>
           <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleFormChange}
-            placeholder="Leave blank to keep current password"
+            placeholder="enter password"
           />
         </div>
-        <button type="submit">
+        <h3>Add New User</h3>
+        <button className="mt-10" type="submit">
           {editingUser ? "Update User" : "Add User"}
         </button>
         {editingUser && (

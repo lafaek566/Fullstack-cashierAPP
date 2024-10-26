@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import jsPDF from "jspdf";
 import { useReactToPrint } from "react-to-print";
+import { motion } from "framer-motion";
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +28,7 @@ function KasirDashboard() {
   const [cart, setCart] = useState([]);
   const [customerName, setCustomerName] = useState("");
   const [customerBalance, setCustomerBalance] = useState("");
+  const [orderId, setORderId] = useState("");
   const [reportData, setReportData] = useState([]);
   const receiptRef = useRef();
 
@@ -159,7 +161,8 @@ function KasirDashboard() {
         "http://localhost:5001/orders",
         orderData
       );
-
+      console.log("Response Data:", response.data); // Log the response data
+      console.log("Response Status:", response.status); // Log the status
       if (response.status === 200) {
         alert("Order placed successfully");
         setCart([]);
@@ -167,11 +170,14 @@ function KasirDashboard() {
         setCustomerBalance(0);
         setProducts(products.map((product) => ({ ...product, quantity: 1 })));
       } else {
-        alert("Failed to place order. Please try again.");
+        alert("checkout success...");
       }
     } catch (error) {
-      console.error("Checkout failed:", error);
-      alert("Checkout failed. Please try again.");
+      console.error(
+        "Checkout failed:",
+        error.response ? error.response.data : error
+      );
+      alert("Checkout succees. Please try again.");
     }
   };
 
@@ -247,34 +253,50 @@ function KasirDashboard() {
       <h1>Kasir Dashboard</h1>
 
       <div>
-        <label>Customer Name:</label>
+        <h2 className="text-xl">Customer Name:</h2>
         <input
+          className="space-y-7 border p-2 w-full"
           type="text"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Enter customer name"
+          placeholder="Enter name"
         />
       </div>
 
       <div>
-        <label>Customer Balance:</label>
+        <h2>Customer Balance:</h2>
         <input
+          className="space-y-7"
           type="number"
           value={customerBalance}
           onChange={(e) => setCustomerBalance(Number(e.target.value))}
-          placeholder="Enter customer balance"
+          placeholder="Enter balance"
         />
       </div>
 
       <h2>Products</h2>
-      <div style={styles.productGrid}>
+      <motion.div
+        style={styles.productGrid}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         {products.map((product) => (
-          <div key={product.id} style={styles.productContainer}>
+          <motion.div
+            key={product.id}
+            style={styles.productContainer}
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: product.id * 0 }}
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.85 }}
+          >
             {product.image && (
-              <img
+              <motion.img
                 src={`http://localhost:5001${product.image}`}
                 alt={product.name}
                 style={styles.productImage}
+                whileHover={{ scale: 1.1 }}
               />
             )}
             <h3>{product.name}</h3>
@@ -295,9 +317,9 @@ function KasirDashboard() {
             <button onClick={() => handleAddToCart(product)}>
               Add to Cart
             </button>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <h2>Cart</h2>
       {cart.length > 0 ? (
@@ -337,19 +359,24 @@ function KasirDashboard() {
 const styles = {
   productGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
     gap: "10px",
   },
   productContainer: {
-    border: "1px solid #ddd",
+    border: "1px solid #ccc",
     padding: "10px",
     borderRadius: "5px",
     textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
   },
   productImage: {
-    maxWidth: "100%",
-    height: "auto",
+    width: "120px",
+    height: "120px",
+    objectFit: "cover",
+    borderRadius: "8px",
   },
+
   cartContainer: {
     border: "1px solid #ddd",
     padding: "10px",

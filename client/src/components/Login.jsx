@@ -50,7 +50,17 @@ const Login = ({ onSwitchToRegister }) => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
-      <p onClick={onSwitchToRegister}>Don't have an account? Register</p>
+      {/* Added inline style for cursor pointer */}
+      <p
+        onClick={onSwitchToRegister}
+        style={{
+          cursor: "pointer",
+          color: "blue",
+          textDecoration: "underline",
+        }}
+      >
+        Don't have an account? Register
+      </p>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// Register.js
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -55,7 +54,17 @@ const Register = ({ onSwitchToLogin }) => {
         <option value="kasir">Kasir</option>
       </select>
       <button onClick={handleRegister}>Register</button>
-      <p onClick={onSwitchToLogin}>Already have an account? Login</p>
+      {/* Added inline style for cursor pointer */}
+      <p
+        onClick={onSwitchToLogin}
+        style={{
+          cursor: "pointer",
+          color: "blue",
+          textDecoration: "underline",
+        }}
+      >
+        Already have an account? Login
+      </p>
     </div>
   );
 };
