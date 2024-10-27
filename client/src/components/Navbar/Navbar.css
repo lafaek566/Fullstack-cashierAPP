@@ -1,0 +1,83 @@
+/* Navbar.css */
+.navbar {
+  background-color: #ffffff; /* Navbar background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Navbar shadow */
+  padding: 0.5rem 1rem; /* Increased padding for better spacing */
+  display: flex;
+  justify-content: space-between; /* Space between logo and links */
+  align-items: center; /* Center items vertically */
+  position: fixed; /* Fixed position */
+  top: 0; /* Stick to the top */
+  width: 100%; /* Full width */
+  z-index: 20; /* Ensure it is on top */
+}
+
+.navbar-scroll {
+  background-color: rgba(255, 255, 255, 0.9); /* Background color on scroll */
+}
+
+.navbar-transparent {
+  background-color: transparent; /* Transparent background */
+}
+
+.navbar-links {
+  display: flex; /* Flex display for links */
+  justify-content: space-around; /* Evenly distribute space between links */
+  align-items: center; /* Center items vertically */
+  flex-grow: 1; /* Allows the links to take up remaining space */
+}
+
+.navbar-links a,
+.navbar-button {
+  margin: 0 0.1rem; /* Uniform margin between items */
+  padding: 0.5rem 0.5rem; /* Padding for links/buttons */
+  text-decoration: none; /* Remove underline from links */
+  color: black; /* Link color */
+  font-size: 1rem; /* Font size for better readability */
+  background-color: transparent;
+}
+
+.navbar-button {
+  background-color: #4169e1; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove default border */
+  border-radius: 0.25rem; /* Rounded corners */
+  cursor: pointer; /* Cursor change on hover */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.navbar-button:hover {
+  background-color: #365899; /* Darker shade on hover */
+  background-color: transparent;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none; /* Hide links initially on mobile */
+    flex-direction: column; /* Stack links vertically */
+    position: absolute; /* Absolute position to overlap the content */
+    top: 100%; /* Position below navbar */
+
+    width: 50%; /* Full width */
+    background-color: #ffffff; /* Background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow */
+  }
+
+  .navbar-links.active {
+    display: flex; /* Show links when active */
+  }
+
+  .hamburger {
+    display: flex; /* Show hamburger menu */
+    flex-direction: column; /* Stack hamburger icon vertically */
+    cursor: pointer; /* Change cursor on hover */
+  }
+
+  .line {
+    height: 2px; /* Height of each line */
+    width: 25px; /* Width of each line */
+    background-color: black; /* Color of hamburger lines */
+    margin: 3px 0; /* Space between lines */
+  }
+}

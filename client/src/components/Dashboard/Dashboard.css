@@ -1,0 +1,84 @@
+/* Dashboard.css */
+
+.dashboard-container {
+  padding-top: 4rem; /* Replacing pt-16 */
+  margin: auto;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem; /* Replacing p-8 */
+  background-color: #f7fafc; /* Replacing bg-gray-100 */
+  border-radius: 0.5rem; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Flex styles for text and image */
+.text-content,
+.image-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Adjust image size for larger screens */
+.dashboard-image {
+  height: auto;
+  width: 100%; /* Make image full width by default */
+  max-width: 400px; /* Set a maximum width for larger screens */
+  justify-content: center;
+  border-radius: 0.75rem; /* More rounded corners */
+  animation: bounce 4s linear infinite; /* Bounce animation */
+}
+
+.header {
+  animation: bounce 4s linear infinite;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  100% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Media query for mobile responsiveness */
+@media (max-width: 639px) {
+  .dashboard-content {
+    padding: 1rem; /* Reduce padding for smaller screens */
+  }
+
+  .text-content {
+    text-align: center; /* Center text on mobile */
+    padding: 0 1rem; /* Add horizontal padding */
+  }
+
+  .image-content {
+    margin-top: 1rem; /* Add margin for separation */
+  }
+
+  .dashboard-image {
+    width: 100%; /* Ensure image fits well on smaller screens */
+    max-width: none; /* Remove max-width for mobile */
+  }
+
+  /* Additional styles for smaller screens */
+  h1 {
+    font-size: 2.5rem; /* Adjust heading size for mobile */
+  }
+
+  h2 {
+    font-size: 2rem; /* Adjust subheading size for mobile */
+  }
+
+  p {
+    font-size: 1rem; /* Adjust paragraph size for mobile */
+  }
+}

@@ -1,11 +1,15 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Dashboard from "./components/Dashboard"; // Komponen Dashboard Umum
-import AdminDashboard from "./components/AdminDashboard"; // Komponen Dashboard Admin
-import KasirDashboard from "./components/KasirDashboard"; // Komponen Dashboard Kasir
-import OrderReport from "./components/OrderReport"; // Komponen Laporan Order
-import UserList from "./components/UserList"; // Komponen Daftar Pengguna
+
+import AdminDashboard from "./components/Dashboard/AdminDashboard"; // Komponen Dashboard Admin
+import KasirDashboard from "./components/Dashboard/KasirDashboard"; // Komponen Dashboard Kasir
+import OrderReport from "./components/Order/OrderReport"; // Komponen Laporan Order
+import UserList from "./components/List/UserList"; // Komponen Daftar Pengguna
+
+import DashboardU from "./components//Dashboard/DashboardU";
 import "./index.css";
+
+// import Dashboard from "./components/Dashboard"; // Komponen Dashboard Umum
 
 const NotFound = () => (
   <div>
@@ -18,7 +22,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />{" "}
+        <Route path="/" element={<DashboardU />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} />{" "} */}
         {/* Use Dashboard as the main route */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/list" element={<UserList />} />

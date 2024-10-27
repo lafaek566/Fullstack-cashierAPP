@@ -251,29 +251,6 @@ function KasirDashboard() {
   return (
     <div>
       <h1>Kasir Dashboard</h1>
-
-      <div>
-        <h2 className="text-xl">Customer Name:</h2>
-        <input
-          className="space-y-7 border p-2 w-full"
-          type="text"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Enter name"
-        />
-      </div>
-
-      <div>
-        <h2>Customer Balance:</h2>
-        <input
-          className="space-y-7"
-          type="number"
-          value={customerBalance}
-          onChange={(e) => setCustomerBalance(Number(e.target.value))}
-          placeholder="Enter balance"
-        />
-      </div>
-
       <h2>Products</h2>
       <motion.div
         style={styles.productGrid}
@@ -320,6 +297,31 @@ function KasirDashboard() {
           </motion.div>
         ))}
       </motion.div>
+
+      <div style={styles.cartItem}>
+        <h2 className="text-xl">Customer Name:</h2>
+
+        <input
+          style={styles.cartContainer}
+          className="space-y-7 border p-2 w-full"
+          type="text"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          placeholder="Enter name"
+        />
+      </div>
+
+      <div style={styles.cartItem}>
+        <h2>Customer Balance:</h2>
+        <input
+          style={styles.cartContainer}
+          className="space-y-7"
+          type="number"
+          value={customerBalance}
+          onChange={(e) => setCustomerBalance(Number(e.target.value))}
+          placeholder="Enter balance"
+        />
+      </div>
 
       <h2>Cart</h2>
       {cart.length > 0 ? (
