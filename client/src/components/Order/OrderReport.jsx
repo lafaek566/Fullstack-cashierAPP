@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Import jsPDF autotable plugin
+import ReceiptComponent from "../Dashboard/ReceiptComponent"; // Import the ReceiptComponent
 import "./OrderReport.css"; // Import the CSS file
 
 const OrderReport = () => {
@@ -8,6 +12,7 @@ const OrderReport = () => {
   const [error, setError] = useState(null);
   const [editOrder, setEditOrder] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [receiptData, setReceiptData] = useState(null); // State to manage receipt data
 
   useEffect(() => {
     fetchOrders();
@@ -79,7 +84,7 @@ const OrderReport = () => {
   };
 
   const data = {
-    labels: reportData.map((order) => order.customer_name), // Use customer names as labels
+    labels: reportData.map((order) => order.customer_name),
     datasets: [
       {
         label: "Total Revenue",
@@ -91,7 +96,7 @@ const OrderReport = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Prevents the aspect ratio from being maintained
+    maintainAspectRatio: false,
     scales: {
       x: {
         ticks: {
@@ -105,6 +110,48 @@ const OrderReport = () => {
     },
   };
 
+  const handleExportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(reportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    XLSX.writeFile(workbook, "OrderReport.xlsx");
+  };
+
+  const handlePrintPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Order Report", 14, 22);
+
+    const tableData = reportData.map((order) => ({
+      OrderID: order.order_id,
+      OrderDate: new Date(order.order_date).toLocaleString(),
+      CustomerName: order.customer_name,
+      TotalItems: order.total_items,
+      TotalRevenue: order.total_revenue,
+    }));
+
+    doc.autoTable({
+      head: [
+        [
+          "Order ID",
+          "Order Date",
+          "Customer Name",
+          "Total Items",
+          "Total Revenue",
+        ],
+      ],
+      body: tableData.map((order) => [
+        order.OrderID,
+        order.OrderDate,
+        order.CustomerName,
+        order.TotalItems,
+        order.TotalRevenue,
+      ]),
+    });
+
+    doc.save("OrderReport.pdf");
+  };
+
   return (
     <div>
       <h1>Order Report</h1>
@@ -114,6 +161,8 @@ const OrderReport = () => {
       </div>
       <h2>Order List</h2>
       <button onClick={handleDeleteSelected}>Delete Selected Orders</button>
+      <button onClick={handleExportToExcel}>Export to Excel</button>
+      <button onClick={handlePrintPDF}>Print PDF</button>
       <table>
         <thead>
           <tr>
@@ -150,9 +199,33 @@ const OrderReport = () => {
               <td>{order.total_items}</td>
               <td>{order.total_revenue}</td>
               <td>
-                <button onClick={() => setEditOrder(order)}>Edit</button>
+                <button
+                  onClick={() => {
+                    setEditOrder({
+                      order_id: order.order_id,
+                      customerName: order.customer_name,
+                      totalPrice: order.total_revenue,
+                      orderDate: order.order_date,
+                      totalItems: order.total_items,
+                      customerId: order.customer_id,
+                    });
+                  }}
+                >
+                  Edit
+                </button>
                 <button onClick={() => handleDelete(order.order_id)}>
                   Delete
+                </button>
+                <button
+                  onClick={() => {
+                    setReceiptData({
+                      customerName: order.customer_name,
+                      customerBalance: order.customer_balance || 0, // Update this to get the correct balance
+                      cart: order.cart || [], // Assume cart details are included in the order
+                    });
+                  }}
+                >
+                  View Receipt
                 </button>
               </td>
             </tr>
@@ -187,20 +260,21 @@ const OrderReport = () => {
               }
               required
             />
-            <input
-              type="datetime-local"
-              value={editOrder.orderDate}
-              onChange={(e) =>
-                setEditOrder({ ...editOrder, orderDate: e.target.value })
-              }
-              required
-            />
+
             <button type="submit">Update</button>
             <button type="button" onClick={() => setEditOrder(null)}>
               Cancel
             </button>
           </form>
         </div>
+      )}
+
+      {receiptData && (
+        <ReceiptComponent
+          customerName={receiptData.customerName}
+          customerBalance={receiptData.customerBalance}
+          cart={receiptData.cart}
+        />
       )}
     </div>
   );

@@ -1,0 +1,106 @@
+.footer {
+  background-color: #f8f9fa; /* Light background color */
+  padding: 20px 0; /* Padding for top and bottom */
+  border-top: 1px solid #e0e0e0; /* Light top border */
+}
+
+.footer .logo {
+  margin: 0 auto;
+  text-align: center; /* Center the logo */
+}
+
+.footer img {
+  transition: transform 0.3s; /* Smooth hover effect */
+  height: 3rem; /* Logo height */
+}
+
+.footer img:hover {
+  transform: scale(1.2); /* Scale image on hover */
+}
+
+.footer .app-links {
+  display: flex;
+  justify-content: center; /* Center app store links */
+  margin-top: 20px; /* Margin between logo and app links */
+}
+
+.footer .app-links img {
+  margin: 0 10px; /* Add space between app links */
+}
+
+.footer h3 {
+  color: #333; /* Darker text color */
+  font-family: "Inter", sans-serif; /* Use Inter font */
+  font-weight: 600; /* Semi-bold */
+  text-align: center; /* Center alignment */
+}
+
+.footer p {
+  color: #666; /* Lighter text color for copyright */
+  font-size: 0.9rem; /* Font size for smaller text */
+  text-align: center; /* Center alignment */
+  margin-top: 10px; /* Margin above copyright */
+}
+
+.footer hr {
+  margin: 20px 0; /* Margin above and below horizontal line */
+}
+
+.footer-container {
+  max-width: 1200px; /* Max width for the footer */
+  margin: 0 auto; /* Center footer container */
+  padding: 0 20px; /* Padding on sides */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px 0; /* Reduce padding on mobile */
+  }
+
+  .footer .logo {
+    padding: 0 10px; /* Add padding to the logo */
+  }
+
+  .footer .app-links {
+    flex-direction: column; /* Stack app store links vertically */
+    margin-top: 10px; /* Reduce margin between logo and app links */
+  }
+
+  .footer .app-links img {
+    height: 4rem; /* Adjust the app store logos size */
+    margin: 5px 0; /* Add space between app links */
+  }
+
+  .footer p {
+    font-size: 0.8rem; /* Smaller font size on mobile */
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px 0; /* Reduce padding on mobile */
+  }
+
+  .footer .logo {
+    padding: 0 100px; /* Add padding to the logo */
+  }
+
+  .footer img {
+    height: 2rem; /* Adjust image height for mobile */
+  }
+
+  .footer .app-links {
+    flex-direction: column; /* Stack app store links vertically */
+    margin-top: 5px; /* Reduce margin between logo and app links */
+  }
+
+  .footer .app-links img {
+    margin: 0px 0; /* Add space between app links */
+  }
+
+  .footer p {
+    font-size: 0.8rem; /* Smaller font size on mobile */
+  }
+}

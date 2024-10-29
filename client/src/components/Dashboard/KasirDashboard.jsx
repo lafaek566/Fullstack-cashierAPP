@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
+import ReceiptComponent from "./ReceiptComponent";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,8 +11,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import jsPDF from "jspdf";
-import { useReactToPrint } from "react-to-print";
 import { motion } from "framer-motion";
 
 ChartJS.register(
@@ -30,7 +29,6 @@ function KasirDashboard() {
   const [customerBalance, setCustomerBalance] = useState("");
   const [orderId, setORderId] = useState("");
   const [reportData, setReportData] = useState([]);
-  const receiptRef = useRef();
 
   // Fetch products
   useEffect(() => {
@@ -70,30 +68,36 @@ function KasirDashboard() {
   }, []);
 
   const handleAddToCart = (product) => {
-    const existingItem = cart.find((item) => item.id === product.id);
+    const sizePriceAdjustment = (size) => {
+      switch (size) {
+        case "small":
+          return product.price - 3; // Reduce $3 for small
+        case "medium":
+          return product.price; // Normal price
+        case "large":
+          return product.price + 3; // Add $3 for large
+        default:
+          return product.price; // Default to normal price
+      }
+    };
+
+    const existingItem = cart.find(
+      (item) => item.name === product.name && item.size === product.size
+    );
+    const adjustedPrice = sizePriceAdjustment(product.size); // Use the size from the product
+
     if (existingItem) {
       setCart(
         cart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + 1, price: adjustedPrice }
             : item
         )
       );
     } else {
-      setCart([
-        ...cart,
-        { ...product, quantity: 1, price: Number(product.price) },
-      ]);
+      setCart([...cart, { ...product, quantity: 1, price: adjustedPrice }]);
     }
-    alert(`${product.name} added to chart!`);
-  };
-
-  const handleQuantityChange = (id, quantity) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, quantity } : product
-      )
-    );
+    alert(`${product.name} (${product.size}) added to cart!`);
   };
 
   const handleReduceQuantity = (product) => {
@@ -140,7 +144,6 @@ function KasirDashboard() {
     }
 
     const totalPrice = calculateTotalPrice();
-
     console.log("Calculated Total Price:", totalPrice);
 
     const orderData = {
@@ -210,48 +213,32 @@ function KasirDashboard() {
     },
   };
 
-  const formatDate = () => {
-    const now = new Date();
-    return now.toLocaleString();
-  };
-
-  const generateReceiptOutput = () => {
-    return `
-    --------------------
-    Receipt
-    Date & Time: ${formatDate()}
-    Customer: ${customerName}
-    Cart Items:
-    ${cart
-      .map(
-        (item) =>
-          `${item.name} (x${item.quantity}) - $${(
-            item.price * item.quantity
-          ).toFixed(2)}`
-      )
-      .join("\n")}
-    --------------------
-    Total Price: $${calculateTotalPrice()}
-    Customer Balance: $${customerBalance}
-    Remaining Balance: $${(customerBalance - calculateTotalPrice()).toFixed(2)}
-    --------------------
-  `;
-  };
-
-  const handlePrintReceipt = useReactToPrint({
-    content: () => receiptRef.current,
-  });
-
-  const handleGeneratePDF = () => {
-    const doc = new jsPDF();
-    doc.text(generateReceiptOutput(), 10, 10);
-    doc.save("receipt.pdf");
-  };
-
   return (
     <div>
       <h1>Kasir Dashboard</h1>
       <h2>Products</h2>
+
+      {/* // customer_name && balance */}
+      <div style={styles.titleContainer}>
+        <h3 className="text-xl">Customer Name:</h3>
+        <input
+          style={styles.titleInput}
+          type="text"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          placeholder="Enter name"
+        />
+        <h3>Customer Balance:</h3>
+        <input
+          style={styles.titleInput}
+          type="number"
+          value={customerBalance}
+          onChange={(e) => setCustomerBalance(Number(e.target.value))}
+          placeholder="Enter balance"
+        />
+      </div>
+
+      {/* motion untuk produts */}
       <motion.div
         style={styles.productGrid}
         initial={{ opacity: 0 }}
@@ -278,19 +265,28 @@ function KasirDashboard() {
             )}
             <h3>{product.name}</h3>
             <p>Price: ${product.price.toFixed(2)}</p>
-            {/* <input
-              type="number"
-              min="1"
-              value={product.quantity}
+
+            <select
+              value={product.size || "medium"} // Set default if size is undefined
               onChange={(e) => {
-                const value = parseInt(e.target.value);
-                handleQuantityChange(
-                  product.id,
-                  isNaN(value) || value < 1 ? 1 : value
-                );
+                const updatedProduct = {
+                  ...product,
+                  size: e.target.value,
+                };
+                setProducts(
+                  products.map((p) =>
+                    p.id === product.id ? updatedProduct : p
+                  )
+                ); // Update state
               }}
-              placeholder="Quantity"
-            /> */}
+            >
+              {" "}
+              <option>chooses size</option>
+              <option value="small">Small -3$</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large +3$</option>
+            </select>
+
             <button onClick={() => handleAddToCart(product)}>
               Add to Cart
             </button>
@@ -298,38 +294,23 @@ function KasirDashboard() {
         ))}
       </motion.div>
 
-      <div style={styles.cartItem}>
-        <h2 className="text-xl">Customer Name:</h2>
-
-        <input
-          style={styles.cartContainer}
-          className="space-y-7 border p-2 w-full"
-          type="text"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Enter name"
-        />
-      </div>
-
-      <div style={styles.cartItem}>
-        <h2>Customer Balance:</h2>
-        <input
-          style={styles.cartContainer}
-          className="space-y-7"
-          type="number"
-          value={customerBalance}
-          onChange={(e) => setCustomerBalance(Number(e.target.value))}
-          placeholder="Enter balance"
-        />
-      </div>
-
-      <h2>Cart</h2>
+      {/* cart add dan tampilan */}
+      <div style={styles.productGrid}></div>
+      <h2 className="text-xl">Cart</h2>
+      <p>
+        Please note: Items in your cart are available in sizes: Small, Medium,
+        and Large.
+      </p>
       {cart.length > 0 ? (
         <div style={styles.cartContainer}>
           {cart.map((item) => (
-            <div key={item.id} style={styles.cartItem}>
-              <h3>{item.name}</h3>
-              <p>Quantity: {item.quantity}</p>
+            <div key={`${item.id}-${item.size}`} style={styles.cartItem}>
+              <h3>
+                {item.name} (Size: {item.size})
+              </h3>
+              <p>
+                Price: ${item.price.toFixed(2)} - Quantity: {item.quantity}
+              </p>
               <p>Total: ${(item.quantity * item.price).toFixed(2)}</p>
               <button onClick={() => handleReduceQuantity(item)}> - </button>
               <button onClick={() => handleIncreaseQuantity(item)}> + </button>
@@ -345,13 +326,11 @@ function KasirDashboard() {
         <p>Your cart is empty.</p>
       )}
 
-      <div style={styles.receipt} ref={receiptRef}>
-        <h2>Receipt</h2>
-        <pre>{generateReceiptOutput()}</pre>
-      </div>
-
-      <button onClick={handlePrintReceipt}>Print Receipt</button>
-      <button onClick={handleGeneratePDF}>Generate PDF</button>
+      <ReceiptComponent
+        cart={cart}
+        customerName={customerName}
+        customerBalance={customerBalance}
+      />
       <h2>Order Report</h2>
       <Bar data={chartData} options={chartOptions} />
     </div>
@@ -378,7 +357,6 @@ const styles = {
     objectFit: "cover",
     borderRadius: "8px",
   },
-
   cartContainer: {
     border: "1px solid #ddd",
     padding: "10px",
@@ -389,12 +367,54 @@ const styles = {
     borderBottom: "1px solid #ddd",
     padding: "5px 0",
   },
-  receipt: {
-    marginTop: "20px",
-    padding: "10px",
+  titleContainer: {
+    display: "flex", // Align elements horizontally
+    flexDirection: "row", // Default to horizontal
+    alignItems: "center", // Center vertically
+    gap: "20px", // Gap between items for desktop
+    padding: "10px", // Padding for the container
+    flexWrap: "wrap", // Allow elements to wrap to the next line if necessary
+  },
+  titleInput: {
+    padding: "5px", // Padding inside input
+    width: "100%", // Full width for mobile
+    maxWidth: "200px", // Maximum width for desktop
     border: "1px solid #ddd",
     borderRadius: "5px",
   },
+  titleH3: {
+    margin: 0, // Remove default margin on <h3>
+    flex: "1", // Allow <h3> to take up space
+  },
 };
+
+// Media Queries for Mobile Responsiveness
+const mediaQueryStyles = `
+  @media (max-width: 600px) {
+    .productGrid {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); // Smaller min-width for mobile
+    }
+    .productImage {
+      width: 100%; // Full width for mobile
+      height: auto; // Maintain aspect ratio
+    }
+    .titleContainer {
+      flex-direction: column; // Stack elements vertically on mobile
+      gap: 5px; // Reduced gap for mobile
+      align-items: flex-start; // Align items to the start for better layout
+   
+    }
+    .titleInput {
+      width: 100%; // Full width for mobile input
+      padding: 0.5rem; /* Add padding for better touch targets */
+       
+    }
+  }
+`;
+
+// Insert media query styles into a <style> element in your component
+const styleElement = document.createElement("style");
+styleElement.textContent = mediaQueryStyles;
+document.head.appendChild(styleElement);
 
 export default KasirDashboard;

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import header1 from "../../assets/images/tea.png";
-import { Switch } from "@material-tailwind/react";
+import Image from "../../assets/images/tea.png";
 import Navbar from "../Navbar/NavbarU";
 import Register from "../Auth/Register";
 import Login from "../Auth/Login";
@@ -70,8 +69,8 @@ const DashboardU = ({ topRef }) => {
                 Neo Drink's
               </h1>
               <p className="mt-0 sm:text-lg text-2xl max-w-lg mx-auto">
-                Giving your home, Sweet magic in every drop, detailed creation
-                of taste and comfort
+                Giving your drink's, sweet magic in every drop, detailed
+                creation of taste and comfort
               </p>
             </div>
             {/* Image Section */}
@@ -79,11 +78,13 @@ const DashboardU = ({ topRef }) => {
               <h2 className="sm:text-3xl text-5xl pb-4 font-medium text-dark text-center sm:text-left">
                 Modern Design
               </h2>
-              <img
-                className="dashboard-image" // Use CSS class
-                src={header1}
-                alt="header-phone"
-              />
+              <div>
+                <img
+                  className="dashboard-image" // Use CSS class
+                  src={Image}
+                  alt="header-phone"
+                />
+              </div>
             </div>
           </div>
         </div>

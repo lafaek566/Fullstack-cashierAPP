@@ -5,7 +5,7 @@ const {
   getOrderReport,
   updateOrder,
   deleteOrder,
-} = require("../controllers/ordercontrollers");
+} = require("../controllers/orderControllers");
 
 // Create a new order
 router.post("/", createOrder);

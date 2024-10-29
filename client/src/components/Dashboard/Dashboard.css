@@ -15,6 +15,10 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
 }
 
+.jump img:hover {
+  transform: scale(1.2); /* Scale image on hover */
+}
+
 /* Flex styles for text and image */
 .text-content,
 .image-content {
@@ -27,7 +31,7 @@
 .dashboard-image {
   height: auto;
   width: 100%; /* Make image full width by default */
-  max-width: 400px; /* Set a maximum width for larger screens */
+  max-width: 500px; /* Set a maximum width for larger screens */
   justify-content: center;
   border-radius: 0.75rem; /* More rounded corners */
   animation: bounce 4s linear infinite; /* Bounce animation */
