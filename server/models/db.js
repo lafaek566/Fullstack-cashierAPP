@@ -17,7 +17,7 @@ const db = pool.promise();
 
 db.getConnection()
   .then(() => {
-    console.log("Connected to MySQL database.");
+    console.log("Hey kamu Connect to database.");
   })
   .catch((err) => {
     console.error("Error connecting to MySQL database:", err);
