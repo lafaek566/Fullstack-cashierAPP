@@ -33,7 +33,7 @@ function AdminDashboard() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5001/products");
+      const response = await axios.get("http://localhost:/products");
       setProducts(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -61,7 +61,7 @@ function AdminDashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/products",
+        "http://localhost:5002/products",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -101,7 +101,7 @@ function AdminDashboard() {
 
     try {
       const response = await axios.put(
-        `http://localhost:5001/products/${updatedProduct.id}`,
+        `http://localhost:5002/products/${updatedProduct.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -126,7 +126,7 @@ function AdminDashboard() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5001/products/${id}`
+        `http://localhost:5002/products/${id}`
       );
       setMessage(response.data.message);
       fetchProducts();
@@ -288,7 +288,7 @@ function AdminDashboard() {
             >
               {product.image && (
                 <img
-                  src={`http://localhost:5001${product.image}`}
+                  src={`http://localhost:5002${product.image}`}
                   alt={product.name}
                   style={styles.productImage}
                 />

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Image from "../../assets/images/tea.png";
+import Images from "../../assets/images/boba.png";
 import Navbar from "../Navbar/NavbarU";
 import Register from "../Auth/Register";
 import Login from "../Auth/Login";
@@ -65,19 +66,13 @@ const DashboardU = ({ topRef }) => {
           <div className="flex flex-col sm:flex-row w-full items-center justify-between">
             {/* Text Section */}
             <div className="text-content sm:w-1/2 text-center sm:text-left pr-4">
-              <h1 className="sm:text-3xl text-5xl font-russonOne font-medium tracking-wide text-dark">
-                Neo Drink's
-              </h1>
-              <p className="mt-0 sm:text-lg text-2xl max-w-lg mx-auto">
-                Giving your drink's, sweet magic in every drop, detailed
-                creation of taste and comfort
+              <h1>Héllo</h1>
+              <p className="sm:text-lg text-2xl text-center max-w-lg mx-auto">
+                Take your drink's, sweet magic in every drop.
               </p>
             </div>
             {/* Image Section */}
             <div className="image-content sm:w-1/2 mt-8 sm:mt-1">
-              <h2 className="sm:text-3xl text-5xl pb-4 font-medium text-dark text-center sm:text-left">
-                Modern Design
-              </h2>
               <div>
                 <img
                   className="dashboard-image" // Use CSS class

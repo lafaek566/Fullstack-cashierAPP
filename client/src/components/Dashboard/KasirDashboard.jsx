@@ -34,7 +34,7 @@ function KasirDashboard() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/products");
+        const response = await axios.get("http://localhost:5002/products");
         const formattedProducts = response.data.map((product) => ({
           ...product,
           price: parseFloat(product.price) || 0,
@@ -53,7 +53,7 @@ function KasirDashboard() {
   useEffect(() => {
     const fetchReportData = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/orders/report");
+        const response = await axios.get("http://localhost:5002/orders/report");
         setReportData(response.data);
       } catch (error) {
         console.error("Error fetching report data:", error);
@@ -161,7 +161,7 @@ function KasirDashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/orders",
+        "http://localhost:5002/orders",
         orderData
       );
       console.log("Response Data:", response.data); // Log the response data
@@ -257,7 +257,7 @@ function KasirDashboard() {
           >
             {product.image && (
               <motion.img
-                src={`http://localhost:5001${product.image}`}
+                src={`http://localhost:5002${product.image}`}
                 alt={product.name}
                 style={styles.productImage}
                 whileHover={{ scale: 1.1 }}

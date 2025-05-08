@@ -10,7 +10,7 @@ const Login = ({ onSwitchToRegister }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:5001/auth/login", {
+      const response = await axios.post("http://localhost:5002/auth/login", {
         username,
         password,
       });

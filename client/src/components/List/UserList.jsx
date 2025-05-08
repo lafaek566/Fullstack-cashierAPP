@@ -14,7 +14,7 @@ const UserList = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/users");
+      const response = await axios.get("http://localhost:5002/users");
       // Format the created_at field
       const formattedUsers = response.data.map((user) => ({
         ...user,
@@ -44,7 +44,7 @@ const UserList = () => {
   const handleDeleteClick = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:5001/users/${id}`);
+        await axios.delete(`http://localhost:5002/users/${id}`);
         setUsers(users.filter((user) => user.id !== id));
       } catch (err) {
         setError("Failed to delete user.");
@@ -72,7 +72,7 @@ const UserList = () => {
         }
 
         const response = await axios.put(
-          `http://localhost:5001/users/${editingUser}`,
+          `http://localhost:5002/users/${editingUser}`,
           updatedUser
         );
 
@@ -90,7 +90,7 @@ const UserList = () => {
         };
 
         const response = await axios.post(
-          "http://localhost:5001/users",
+          "http://localhost:5002/users",
           newUser
         );
         setUsers((prevUsers) => [

@@ -14,7 +14,7 @@ const Register = ({ onSwitchToLogin }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5001/auth/register", {
+      const response = await axios.post("http://localhost:5002/auth/register", {
         username,
         password,
         role,

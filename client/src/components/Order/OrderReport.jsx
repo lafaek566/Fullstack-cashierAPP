@@ -20,7 +20,7 @@ const OrderReport = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/orders/report");
+      const response = await axios.get("http://localhost:5002/orders/report");
       if (Array.isArray(response.data)) {
         setReportData(response.data);
       } else {
@@ -34,7 +34,7 @@ const OrderReport = () => {
 
   const handleUpdate = async (orderId) => {
     try {
-      await axios.put(`http://localhost:5001/orders/${orderId}`, {
+      await axios.put(`http://localhost:5002/orders/${orderId}`, {
         customer_name: editOrder.customerName,
         total_price: editOrder.totalPrice,
         order_date: editOrder.orderDate,
@@ -52,7 +52,7 @@ const OrderReport = () => {
   const handleDelete = async (orderId) => {
     if (window.confirm("Are you sure you want to delete this order?")) {
       try {
-        await axios.delete(`http://localhost:5001/orders/${orderId}`);
+        await axios.delete(`http://localhost:5002/orders/${orderId}`);
         alert("Order deleted successfully");
         fetchOrders();
       } catch (err) {
@@ -71,7 +71,7 @@ const OrderReport = () => {
       try {
         await Promise.all(
           selectedOrders.map((orderId) =>
-            axios.delete(`http://localhost:5001/orders/${orderId}`)
+            axios.delete(`http://localhost:5002/orders/${orderId}`)
           )
         );
         alert("Selected orders deleted successfully");

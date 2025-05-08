@@ -30,7 +30,7 @@
 /* Adjust image size for larger screens */
 .dashboard-image {
   height: auto;
-  width: 100%; /* Make image full width by default */
+  width: 500%; /* Make image full width by default */
   max-width: 500px; /* Set a maximum width for larger screens */
   justify-content: center;
   border-radius: 0.75rem; /* More rounded corners */

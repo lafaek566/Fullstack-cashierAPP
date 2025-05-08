@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token"); // Assuming you're storing the token in localStorage
     if (token) {
       try {
-        const response = await axios.get("http://localhost:5001/auth/role", {
+        const response = await axios.get("http://localhost:5002/auth/role", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserRole(response.data.role); // Adjust based on your backend response
